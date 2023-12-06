@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Frontpage from "./Frontpage.jsx";
+import Statistics from "./Statistics.jsx";
 
 function App() {
   return (
-    <div>
-      <div className="sidebar" style={{ width: "25%" }}>
+    <div className="container">
+      <div className="sidebar">
         <div className="sidebar-item">
           <a href="/" className="button">
             Home
@@ -22,12 +23,12 @@ function App() {
           </a>
         </div>
       </div>
-      <div style={{ marginLeft: "25%", width: "75%" }}>
+      <div>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Frontpage />} />
             <Route path="/about" element={"bloop"} />
-            <Route path="/statistics" element={"oops"} />
+            <Route path="/statistics" element={<Statistics />} />
           </Routes>
         </BrowserRouter>
       </div>
