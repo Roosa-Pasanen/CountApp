@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
+import EditTask from "./EditTask";
 
 export default function Task(props) {
   const [tagState, setTagState] = useState(0);
   const [editState, setEditState] = useState(false);
 
   useEffect(() => {
-    let tagArray = props.tags.map((tag) => <li>{tag}</li>);
+    let tagArray = [];
+    for (let i = 0; i < props.tags.length; i++) {
+      tagArray.push(<li key={i}>{props.tags[i]}</li>);
+    }
     setTagState(<ul>Tags: {tagArray} </ul>);
   }, [props.tags, props.name]);
 
@@ -23,8 +27,7 @@ export default function Task(props) {
     } else {
       return (
         <div>
-          <p>Bop</p>
-          <button onClick={() => setEditState(false)}> oops </button>
+          <EditTask name={props.name} tags={props.tags} />
         </div>
       );
     }

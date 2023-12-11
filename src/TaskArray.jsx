@@ -10,7 +10,6 @@ export default function TaskArray() {
         const info = await fetch("http://localhost:3010/tasks");
         const infoparse = await info.json();
         setDisplayState(infoparse);
-        console.log(infoparse);
       } catch (err) {
         console.log(err);
       }
@@ -26,7 +25,6 @@ export default function TaskArray() {
       } else {
         let taskArray = [];
         for (let i = 0; i < info.length; i++) {
-          console.log(info[i].name + ": " + info[i].tags);
           taskArray.push(
             <Task key={info[i].id} name={info[i].name} tags={info[i].tags} />
           );

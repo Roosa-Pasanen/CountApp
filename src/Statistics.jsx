@@ -4,7 +4,7 @@ export default function Statistics() {
       <p>Instructions: Currently not needed (page has no functionality)</p>
       <p>Used external libraries: Currently none</p>
       <p>Usage of AI: none</p>
-      <p>Total coding time: 2h</p>
+      <p>Total coding time: 8h</p>
       <ul>
         Nykyiset ongelmat:
         <li>Appi fullscreeniin (vie enemmän kuin 340px)</li>
