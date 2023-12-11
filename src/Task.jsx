@@ -5,11 +5,7 @@ export default function Task(props) {
   const [editState, setEditState] = useState(false);
 
   useEffect(() => {
-    let tagArray = [];
-    console.log(props.name + " (task.jsx): " + props.tags);
-    for (let i = 0; i < props.tags.length; i++) {
-      tagArray.push(<li key={i}>{props.tags[i]}</li>);
-    }
+    let tagArray = props.tags.map((tag) => <li>{tag}</li>);
     setTagState(<ul>Tags: {tagArray} </ul>);
   }, [props.tags, props.name]);
 
