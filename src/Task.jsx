@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Task(props) {
   const [tagState, setTagState] = useState(0);
@@ -11,7 +11,7 @@ export default function Task(props) {
       tagArray.push(<li key={i}>{props.tags[i]}</li>);
     }
     setTagState(<ul>Tags: {tagArray} </ul>);
-  }, [props.tags]);
+  }, [props.tags, props.name]);
 
   useEffect(() => {}, [setEditState]);
 
