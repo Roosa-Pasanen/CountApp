@@ -1,14 +1,11 @@
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import EditTask from "./EditTask";
+import EditContext from "./EditContext.jsx";
 
 export default function Task(props) {
   const [tagState, setTagState] = useState(0); //Stores tags
   const [editState, setEditState] = useState(false); //Stores editing state
   const value = { editState, setEditState }; //Passed through context
-  const EditContext = React.createContext({
-    editState: "false",
-    setEditState: () => {},
-  });
 
   // Create a visual effect where you can see the tags
   useEffect(() => {

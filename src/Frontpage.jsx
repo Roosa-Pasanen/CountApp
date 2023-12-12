@@ -1,6 +1,7 @@
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskArray from "./TaskArray.jsx";
 import EditTask from "./EditTask.jsx";
+import EditContext from "./EditContext.jsx";
 
 export default function Frontpage() {
   // Returns an array of tasks with a UI for adding a new task on top
