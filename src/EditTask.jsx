@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 export default function EditTask(props) {
   const [nameState, setNameState] = useState(props.name); // Stores current name
@@ -35,6 +35,10 @@ export default function EditTask(props) {
     setTagState(newArray);
     setNewTagState("New tag");
   }
+  const closeEditTask = () => {
+    const { EditState, setEditState } = useContext(EditContext);
+    setEditState = false;
+  };
 
   //Returns an input field, tags held in the object, tools for adding a new tag
   //and the options to cancel or save
@@ -48,8 +52,8 @@ export default function EditTask(props) {
       />
       <button onClick={() => addTag()}> Add new Tag </button> {"\n"}
       <div>
-        <button> Cancel </button>
-        <button> Save </button>
+        <button onClick={() => closeEditTask()}> Cancel </button>
+        <button onClick={() => closeEditTask()}> Save </button>
       </div>
     </>
   );
