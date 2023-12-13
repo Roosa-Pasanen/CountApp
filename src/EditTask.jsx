@@ -26,7 +26,6 @@ export default function EditTask(props) {
   // Deletes tag from the object
   function deleteTag(name) {
     const newArray = tagState.filter((tag) => tag !== name);
-    console.log(newArray);
     setTagState(newArray);
   }
 
@@ -37,6 +36,7 @@ export default function EditTask(props) {
     setTagState(newArray);
     setNewTagState("New tag");
   }
+
   const closeEditTask = (save) => {
     if (save) {
       /*fetch('/tasks' {

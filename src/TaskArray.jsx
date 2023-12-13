@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Task from "./task.jsx";
+import DatabaseContext from "./DatabaseContext.jsx";
+import connection from "./connection.js";
 
 export default function TaskArray() {
-  const [displayState, setDisplayState] = useState(null); // Current information in the system
+  const [displayState, setDisplayState] = useState(null);
+  const { dbState, setDbState } = useContext(DatabaseContext);
 
   // Fetches and parses the information
+
   useEffect(() => {
     async function dataFetch() {
       try {
-        const info = await fetch("http://localhost:3010/tasks");
-        const infoparse = await info.json();
-        setDisplayState(infoparse);
+        const info = await connection.fetchAll("http://localhost:3010/tasks");
+        setDisplayState(info);
       } catch (err) {
         console.log(err);
       }
