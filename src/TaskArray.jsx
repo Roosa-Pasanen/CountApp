@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import Task from "./task.jsx";
 import DatabaseContext from "./DatabaseContext.jsx";
-import EditTask from "./EditTask.jsx";
-import EditContext from "./EditContext.jsx";
+import NewTask from "./NewTask.jsx";
+import NewContext from "./NewContext.jsx";
 import connection from "./connection.js";
 
 export default function TaskArray() {
@@ -12,7 +12,7 @@ export default function TaskArray() {
   const [idState, setIdState] = useState(undefined);
   const [nameState, setNameState] = useState("New Task");
   const [tagState, setTagState] = useState([]); //Stores tags
-  const editValue = {
+  const newValue = {
     editState,
     setEditState,
     idState,
@@ -39,17 +39,54 @@ export default function TaskArray() {
 
   useEffect(() => {
     if (idState !== undefined) {
-      try {
-        let info = displayState;
-        console.log(info);
-        info.push(JSON.stringify({ idState, nameState, tagState }));
-        setDisplayState(info);
-        setIdState(undefined);
-        setNameState("New Task");
-        setTagState([]);
-      } catch (error) {}
+      let info = displayState;
+      info.push({
+        id: idState,
+        name: nameState,
+        tags: tagState,
+      });
+      setDisplayState(info);
+      setIdState(undefined);
     }
-  }, [editValue]);
+  }, [idState, displayState, nameState, tagState]);
+
+  const newTask = () => {
+    if (displayState != null) {
+      if (editState) {
+        return (
+          <div>
+            <div>
+              <NewContext.Provider value={newValue}>
+                <NewTask
+                  newID={displayState.length}
+                  name={"New Task"}
+                  tags={[]}
+                />
+              </NewContext.Provider>
+            </div>
+            <div>{createTaskList()}</div>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <div>
+              <button
+                onClick={() => {
+                  setEditState(true);
+                }}
+              >
+                Create new task
+              </button>
+            </div>
+            <div>{createTaskList()}</div>
+          </div>
+        );
+      }
+    } else {
+      return <></>;
+    }
+  };
 
   //Creates a task list out of the information in the database
   function createTaskList() {
@@ -71,19 +108,17 @@ export default function TaskArray() {
             />
           );
         }
-        return (
-          <div>
-            <EditContext.Provider value={editValue}>
-              <EditTask newID={info.length} name={nameState} tags={tagState} />
-            </EditContext.Provider>
-            <div>{taskArray}</div>
-          </div>
-        );
+        return taskArray;
       }
     } catch (err) {
+      console.log(err);
       return <p>Something went wrong while fetching from database</p>;
     }
   }
 
-  return createTaskList();
+  return (
+    <div>
+      <div>{newTask()}</div>
+    </div>
+  );
 }

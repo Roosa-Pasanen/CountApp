@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import EditContext from "./EditContext";
+import NewContext from "./NewContext.jsx";
 import connection from "./connection.js";
 
 export default function EditTask(props) {
@@ -15,7 +15,7 @@ export default function EditTask(props) {
     setNameState,
     tagState,
     setTagState,
-  } = useContext(EditContext);
+  } = useContext(NewContext);
 
   //List of tags with delete buttons next to them
   function displayTags() {
@@ -49,34 +49,20 @@ export default function EditTask(props) {
 
   const closeEditTask = async (save) => {
     if (save) {
-      if (idState !== undefined) {
-        try {
-          setNameState(newNameState);
-          setTagState(editTagState);
-          await connection.putEntry(
-            "http://localhost:3010/tasks",
-            idState,
-            newNameState,
-            editTagState
-          );
-        } catch (err) {
-          console.log("Connection error");
-        }
-      } else {
-        try {
-          setIdState(props.newID);
-          setNameState(newNameState);
-          setTagState(editTagState);
-          await connection.postEntry(
-            "http://localhost:3010/tasks",
-            idState,
-            newNameState,
-            editTagState
-          );
-        } catch (err) {
-          console.log(err);
-          console.log("Connection error");
-        }
+      try {
+        console.log(props.newID);
+        setIdState(props.newID);
+        setNameState(newNameState);
+        setTagState(editTagState);
+        await connection.postEntry(
+          "http://localhost:3010/tasks",
+          idState,
+          newNameState,
+          editTagState
+        );
+      } catch (err) {
+        console.log(err);
+        console.log("Connection error");
       }
     }
     setEditState(false);

@@ -20,11 +20,15 @@ export default function Task(props) {
 
   // Create a visual effect where you can see the tags
   useEffect(() => {
-    let tagArray = [];
-    for (let i = 0; i < tagState.length; i++) {
-      tagArray.push(<li key={i}>{tagState[i]}</li>);
+    try {
+      let tagArray = [];
+      for (let i = 0; i < tagState.length; i++) {
+        tagArray.push(<li key={i}>{tagState[i]}</li>);
+      }
+      setTagElementState(<ul>Tags: {tagArray} </ul>);
+    } catch (err) {
+      console.log(err);
     }
-    setTagElementState(<ul>Tags: {tagArray} </ul>);
   }, [editState, tagState]);
 
   // Returns either a UI for the Task or opens an EditTask object
