@@ -1,50 +1,82 @@
 import { useState, useEffect, useContext } from "react";
 import EditContext from "./EditContext";
+import connection from "./connection.js";
 
 export default function EditTask(props) {
-  const [nameState, setNameState] = useState(props.name); // Stores current name
-  const [tagState, setTagState] = useState(props.tags); // Stores current tags
+  const [newNameState, setNewNameState] = useState(props.name); // Stores current name
+  const [editTagState, setEditTagState] = useState(props.tags); // Stores current tags
   const [newTagState, setNewTagState] = useState("New tag"); // Stores currently added tag
-  const { EditState, setEditState } = useContext(EditContext);
+  const {
+    EditState,
+    setEditState,
+    idState,
+    nameState,
+    setNameState,
+    tagState,
+    setTagState,
+  } = useContext(EditContext);
 
   //List of tags with delete buttons next to them
   function displayTags() {
     let tagArray = [];
-    for (let i = 0; i < tagState.length; i++) {
+    for (let i = 0; i < editTagState.length; i++) {
       tagArray.push(
         <li key={i}>
-          {tagState[i]}
-          <button onClick={() => deleteTag(tagState[i])}>Delete</button>
+          {editTagState[i]}
+          <button onClick={() => deleteTag(editTagState[i])}>Delete</button>
         </li>
       );
     }
     return tagArray;
   }
 
-  useEffect(() => {}, [setTagState]);
+  useEffect(() => {}, [setEditTagState]);
 
   // Deletes tag from the object
   function deleteTag(name) {
-    const newArray = tagState.filter((tag) => tag !== name);
-    setTagState(newArray);
+    const newArray = editTagState.filter((tag) => tag !== name);
+    setEditTagState(newArray);
   }
 
   //Adds a tag to the object and returns the tag UI to default
   function addTag() {
-    const newArray = tagState;
+    const newArray = editTagState;
     newArray.push(newTagState);
-    setTagState(newArray);
+    setEditTagState(newArray);
     setNewTagState("New tag");
   }
 
   const closeEditTask = (save) => {
     if (save) {
-      /*fetch('/tasks' {
-            method: "post",
-            body: JSON.stringify({
-
-            })
-        })*/
+      if (idState !== undefined) {
+        try {
+          setNameState(newNameState);
+          setTagState(editTagState);
+          connection.putEntry(
+            "http://localhost:3010/tasks",
+            idState,
+            newNameState,
+            editTagState
+          );
+        } catch (err) {
+          console.log("Connection error");
+        }
+      } else {
+        try {
+          setIdState(props.newID);
+          setNameState(newNameState);
+          setTagState(editTagState);
+          connection.postEntry(
+            "http://localhost:3010/tasks",
+            idState,
+            newNameState,
+            editTagState
+          );
+        } catch (err) {
+          console.log(err);
+          console.log("Connection error");
+        }
+      }
     }
     setEditState(false);
   };
@@ -53,7 +85,10 @@ export default function EditTask(props) {
   //and the options to cancel or save
   return (
     <>
-      <input value={nameState} onChange={(e) => setNameState(e.target.value)} />
+      <input
+        value={newNameState}
+        onChange={(e) => setNewNameState(e.target.value)}
+      />
       <ul>{displayTags()}</ul>
       <input
         value={newTagState}
