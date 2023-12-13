@@ -1,7 +1,7 @@
 import React from "react";
 
 const EditContext = React.createContext({
-  editState: "false",
+  editState: false,
   setEditState: () => {},
   idState: undefined,
   nameState: "Name",

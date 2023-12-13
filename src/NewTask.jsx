@@ -50,7 +50,6 @@ export default function EditTask(props) {
   const closeEditTask = async (save) => {
     if (save) {
       try {
-        console.log(props.newID);
         setIdState(props.newID);
         setNameState(newNameState);
         setTagState(editTagState);

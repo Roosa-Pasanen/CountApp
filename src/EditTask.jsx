@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import EditContext from "./EditContext";
+import DeleteContext from "./DeleteContext.jsx";
 import connection from "./connection.js";
 
 export default function EditTask(props) {
@@ -16,6 +17,7 @@ export default function EditTask(props) {
     tagState,
     setTagState,
   } = useContext(EditContext);
+  const { deleteId, setDeleteId } = useContext(DeleteContext);
 
   //List of tags with delete buttons next to them
   function displayTags() {
@@ -35,6 +37,7 @@ export default function EditTask(props) {
 
   // Deletes tag from the object
   function deleteTag(name) {
+    connection.deleteEntry();
     const newArray = editTagState.filter((tag) => tag !== name);
     setEditTagState(newArray);
   }
@@ -46,6 +49,30 @@ export default function EditTask(props) {
     setEditTagState(newArray);
     setNewTagState("New tag");
   }
+
+  const deleteTask = async () => {
+    try {
+      await connection.deleteEntry("http://localhost:3010/tasks", idState);
+      setDeleteId(idState);
+    } catch (err) {
+      console.log("Connection error");
+    }
+    setEditState(false);
+  };
+
+  const deleteButton = () => {
+    if (idState !== undefined) {
+      return (
+        <button
+          onClick={() => {
+            deleteTask();
+          }}
+        >
+          Delete Task
+        </button>
+      );
+    }
+  };
 
   const closeEditTask = async (save) => {
     if (save) {
@@ -99,6 +126,7 @@ export default function EditTask(props) {
       <div>
         <button onClick={() => closeEditTask(false)}> Cancel </button>
         <button onClick={() => closeEditTask(true)}> Save </button>
+        {deleteButton()}
       </div>
     </>
   );

@@ -1,18 +1,19 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Task from "./task.jsx";
-import DatabaseContext from "./DatabaseContext.jsx";
-import NewTask from "./NewTask.jsx";
-import NewContext from "./NewContext.jsx";
+import DeleteContext from "./DeleteContext.jsx";
+import EditTask from "./EditTask.jsx";
+import EditContext from "./EditContext.jsx";
 import connection from "./connection.js";
 
 export default function TaskArray() {
   const [displayState, setDisplayState] = useState(null);
-  const { dbState, setDbState } = useContext(DatabaseContext);
+  const [deleteId, setDeleteId] = useState(undefined);
+  const deleteValue = { deleteId, setDeleteId };
   const [editState, setEditState] = useState(false); //Stores editing state
   const [idState, setIdState] = useState(undefined);
   const [nameState, setNameState] = useState("New Task");
   const [tagState, setTagState] = useState([]); //Stores tags
-  const newValue = {
+  const editValue = {
     editState,
     setEditState,
     idState,
@@ -38,6 +39,14 @@ export default function TaskArray() {
   }, []);
 
   useEffect(() => {
+    if (deleteId !== undefined) {
+      const newInfo = displayState.filter((task) => task.id !== deleteId);
+      setDisplayState(newInfo);
+      setDeleteId(undefined);
+    }
+  }, [deleteId, displayState]);
+
+  useEffect(() => {
     if (idState !== undefined) {
       let info = displayState;
       info.push({
@@ -56,13 +65,13 @@ export default function TaskArray() {
         return (
           <div>
             <div>
-              <NewContext.Provider value={newValue}>
-                <NewTask
-                  newID={displayState.length}
+              <EditContext.Provider value={editValue}>
+                <EditTask
+                  newID={displayState[displayState.length - 1].id + 1}
                   name={"New Task"}
                   tags={[]}
                 />
-              </NewContext.Provider>
+              </EditContext.Provider>
             </div>
             <div>{createTaskList()}</div>
           </div>
@@ -100,12 +109,9 @@ export default function TaskArray() {
         for (let i = 0; i < info.length; i++) {
           taskArray.push(
             //Create an array of tasks
-            <Task
-              key={info[i].id}
-              id={info[i].id}
-              name={info[i].name}
-              tags={info[i].tags}
-            />
+            <DeleteContext.Provider key={info[i].id} value={deleteValue}>
+              <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
+            </DeleteContext.Provider>
           );
         }
         return taskArray;

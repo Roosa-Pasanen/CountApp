@@ -34,6 +34,11 @@ const connection = {
       }),
     });
   },
+  deleteEntry: async (add, id) => {
+    fetch(`${add}/${id}`, {
+      method: "delete",
+    });
+  },
 };
 
 export default connection;
