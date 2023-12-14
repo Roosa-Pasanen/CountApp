@@ -2,13 +2,13 @@ const connection = {
   fetchAll: async (add) => {
     try {
       const info = await fetch(add);
-      const infoparse = await info.json();
+      const infoparse = info.json();
       return infoparse;
     } catch (err) {
       console.log(err);
     }
   },
-  putEntry: async (add, id, name, tags) => {
+  putEntry: (add, id, name, tags) => {
     fetch(`${add}/${id}`, {
       method: "put",
       headers: {
@@ -21,7 +21,7 @@ const connection = {
       }),
     });
   },
-  postEntry: async (add, id, name, tags) => {
+  postEntry: (add, id, name, tags) => {
     fetch(add, {
       method: "POST",
       headers: {

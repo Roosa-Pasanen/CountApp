@@ -10,6 +10,7 @@ import SelectionContext from "./SelectionContext.jsx";
 export default function TaskArray() {
   // Stores the current database information
   const [displayState, setDisplayState] = useState(null);
+  const [globalTagState, setGlobalTagState] = useState(null);
 
   // Holds the task id of a task that should be deleted
   const [deleteId, setDeleteId] = useState(undefined);
@@ -39,10 +40,6 @@ export default function TaskArray() {
     tagArrayState,
     setTagArrayState,
   };
-
-  // Stores currently filtered taskArray
-  const [filterState, setFilterState] = useState([]);
-
   /**
    * Fetches and parses the information from the database
    * Sets that information in a state
@@ -52,12 +49,30 @@ export default function TaskArray() {
       try {
         const info = await connection.fetchAll("http://localhost:3010/tasks");
         setDisplayState(info);
+        globalTags(info);
+        console.log("hi");
       } catch (err) {
         console.log(err);
       }
     }
     dataFetch();
   }, []);
+
+  const globalTags = (info) => {
+    let globalTags = [];
+    for (let i = 0; i < info.length; i++) {
+      for (let j = 0; j < info[i].tags.length; j++) {
+        let exclude = false;
+        for (let k = 0; k < globalTags.length && !exclude; k++) {
+          exclude = globalTags[k] == info[i].tags[j];
+        }
+        if (!exclude) {
+          globalTags.push(info[i].tags[j]);
+        }
+      }
+    }
+    setGlobalTagState(globalTags);
+  };
 
   /**
    * If a new task is added, it is pushed to the list of displayed tasks
@@ -117,6 +132,7 @@ export default function TaskArray() {
             </div>
           );
         } else {
+          console.log(globalTagState);
           return (
             <div>
               <div>
