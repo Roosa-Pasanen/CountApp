@@ -5,6 +5,7 @@ import EditTask from "./EditTask.jsx";
 import EditContext from "./EditContext.jsx";
 import connection from "./connection.js";
 import TagList from "./TagList.jsx";
+import SelectionContext from "./SelectionContext.jsx";
 
 export default function TaskArray() {
   // Stores the current database information
@@ -30,7 +31,16 @@ export default function TaskArray() {
     setTagState,
   }; //Passed through context
 
-  // Stores currently filtered results
+  const [tagArrayState, setTagArrayState] = useState([]);
+  const [newTagState, setNewTagState] = useState("");
+  const filterValue = {
+    newTagState,
+    setNewTagState,
+    tagArrayState,
+    setTagArrayState,
+  };
+
+  // Stores currently filtered taskArray
   const [filterState, setFilterState] = useState([]);
 
   /**
@@ -136,8 +146,13 @@ export default function TaskArray() {
    * @returns - The created list
    */
   function createTaskList() {
-    const info = displayState;
+    let info = displayState;
     let taskArray = [];
+
+    if (tagArrayState.length > 0) {
+      info = filterResults(info);
+    }
+
     for (let i = 0; i < info.length; i++) {
       taskArray.push(
         //Create an array of tasks
@@ -149,7 +164,18 @@ export default function TaskArray() {
     return taskArray;
   }
 
-  const filterResults = () => {};
+  const filterResults = (arr) => {
+    arr = arr.filter((task) => {
+      let tagMatches = 0;
+      for (let i = 0; i < tagArrayState.length; i++) {
+        for (let j = 0; j < task.tags.length; j++) {
+          tagArrayState[i] == task.tags[j] ? tagMatches++ : {};
+        }
+      }
+      return tagMatches == tagArrayState.length;
+    });
+    return arr;
+  };
 
   /**
    * Returns the entire UI
@@ -157,7 +183,9 @@ export default function TaskArray() {
   return (
     <div>
       <div>
-        <TagList />
+        <SelectionContext.Provider value={filterValue}>
+          <TagList />
+        </SelectionContext.Provider>
       </div>
       <div>{newTask()}</div>
     </div>

@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import TagDropdown from "./TagDropdown";
 import SelectionContext from "./SelectionContext";
 
 export default function TagList() {
-  const [tagArrayState, setTagArrayState] = useState([]); //Holds currently filtered tags
-  const [newTagState, setNewTagState] = useState(""); //Holds whatever tag's being added
-  //const [tagState, setTagState] = useState([]);
-  const dropdownValue = { newTagState, setNewTagState };
+  const { newTagState, setNewTagState, tagArrayState, setTagArrayState } =
+    useContext(SelectionContext);
 
   /**
    * Create an Array of the currently filtered tags and their delete buttons
@@ -62,15 +60,13 @@ export default function TagList() {
   return (
     <>
       {"Filter results:  "}
-      <SelectionContext.Provider value={dropdownValue}>
-        <TagDropdown />
-      </SelectionContext.Provider>
+      <TagDropdown />
       <button
         onClick={() => {
           addTag();
         }}
       >
-        {"Add filtered tag"}
+        {"Add filter tag"}
       </button>
       <div>{createTagArray()}</div>
     </>

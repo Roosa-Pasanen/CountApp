@@ -3,8 +3,8 @@ import React from "react";
 const SelectionContext = React.createContext({
   newTagState: "",
   setNewTagState: () => {},
-  tagArray: [],
-  setTagArray: () => {},
+  tagArrayState: [],
+  setTagArrayState: () => {},
 });
 
 export default SelectionContext;
