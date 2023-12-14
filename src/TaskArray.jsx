@@ -6,12 +6,17 @@ import EditContext from "./EditContext.jsx";
 import connection from "./connection.js";
 
 export default function TaskArray() {
+  // Stores the current database information
   const [displayState, setDisplayState] = useState(null);
+
+  // Holds the task id of a task that should be deleted
   const [deleteId, setDeleteId] = useState(undefined);
   const deleteValue = { deleteId, setDeleteId };
+
+  // Stores if a new task UI should be shown and the default values for it
   const [editState, setEditState] = useState(false); //Stores editing state
-  const [idState, setIdState] = useState(undefined);
-  const [nameState, setNameState] = useState("New Task");
+  const [idState, setIdState] = useState(undefined); //Stores tag
+  const [nameState, setNameState] = useState("New Task"); //Stores nane
   const [tagState, setTagState] = useState([]); //Stores tags
   const editValue = {
     editState,
@@ -24,8 +29,10 @@ export default function TaskArray() {
     setTagState,
   }; //Passed through context
 
-  // Fetches and parses the information
-
+  /**
+   * Fetches and parses the information from the database
+   * Sets that information in a state
+   */
   useEffect(() => {
     async function dataFetch() {
       try {
@@ -38,14 +45,9 @@ export default function TaskArray() {
     dataFetch();
   }, []);
 
-  useEffect(() => {
-    if (deleteId !== undefined) {
-      const newInfo = displayState.filter((task) => task.id !== deleteId);
-      setDisplayState(newInfo);
-      setDeleteId(undefined);
-    }
-  }, [deleteId, displayState]);
-
+  /**
+   * If a new task is added, it is pushed to the list of displayed tasks
+   */
   useEffect(() => {
     if (idState !== undefined) {
       let info = displayState;
@@ -59,69 +61,93 @@ export default function TaskArray() {
     }
   }, [idState, displayState, nameState, tagState]);
 
-  const newTask = () => {
-    if (displayState != null) {
-      if (editState) {
-        return (
-          <div>
-            <div>
-              <EditContext.Provider value={editValue}>
-                <EditTask
-                  newID={displayState[displayState.length - 1].id + 1}
-                  name={"New Task"}
-                  tags={[]}
-                />
-              </EditContext.Provider>
-            </div>
-            <div>{createTaskList()}</div>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            <div>
-              <button
-                onClick={() => {
-                  setEditState(true);
-                }}
-              >
-                Create new task
-              </button>
-            </div>
-            <div>{createTaskList()}</div>
-          </div>
-        );
-      }
-    } else {
-      return <></>;
+  /**
+   * If there's something in the deleteId, the task corresponding to that id
+   * gets filtered out of the list of displayed tasks
+   */
+  useEffect(() => {
+    if (deleteId !== undefined) {
+      const newInfo = displayState.filter((task) => task.id !== deleteId);
+      setDisplayState(newInfo);
+      setDeleteId(undefined);
     }
-  };
+  }, [deleteId, displayState]);
 
-  //Creates a task list out of the information in the database
-  function createTaskList() {
+  /**
+   * If the data
+   *  - has been fetched
+   *      - If a new task is being edited
+   *          -> Editing UI for the new task + list of all the tasks
+   *      - If no edited task
+   *          -> A button for opening the new task + list of all the tasks
+   *  - hasn't been fetched -> return that the information is being fetched
+   *
+   * -> If something goes wrong, show error
+   */
+  const newTask = () => {
     try {
-      const info = displayState;
-      if (info == null) {
-        //Nothing has been loaded yet
-        return <p>Fetching database information, please wait a moment</p>;
-      } else {
-        let taskArray = [];
-        for (let i = 0; i < info.length; i++) {
-          taskArray.push(
-            //Create an array of tasks
-            <DeleteContext.Provider key={info[i].id} value={deleteValue}>
-              <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
-            </DeleteContext.Provider>
+      if (displayState != null) {
+        if (editState) {
+          return (
+            <div>
+              <div>
+                <EditContext.Provider value={editValue}>
+                  <EditTask
+                    newID={displayState[displayState.length - 1].id + 1}
+                    name={"New Task"}
+                    tags={[]}
+                  />
+                </EditContext.Provider>
+              </div>
+              <div>{createTaskList()}</div>
+            </div>
+          );
+        } else {
+          return (
+            <div>
+              <div>
+                <button
+                  onClick={() => {
+                    setEditState(true);
+                  }}
+                >
+                  Create new task
+                </button>
+              </div>
+              <div>{createTaskList()}</div>
+            </div>
           );
         }
-        return taskArray;
+      } else {
+        return <p>Fetching database information, please wait a moment</p>;
       }
     } catch (err) {
       console.log(err);
       return <p>Something went wrong while fetching from database</p>;
     }
+  };
+
+  /**
+   *  Create a list of the tasks in the database
+   * @returns - The created list
+   */
+  function createTaskList() {
+    const info = displayState;
+    let taskArray = [];
+    for (let i = 0; i < info.length; i++) {
+      taskArray.push(
+        //Create an array of tasks
+        <DeleteContext.Provider key={info[i].id} value={deleteValue}>
+          <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
+        </DeleteContext.Provider>
+      );
+    }
+    return taskArray;
   }
 
+  /**
+   * Returns the entire UI
+   */
   return (
     <div>
       <div>{newTask()}</div>
