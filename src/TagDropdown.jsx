@@ -2,9 +2,16 @@ import { useContext } from "react";
 import SelectionContext from "./SelectionContext";
 
 export default function TagDropdown() {
-  const { newTagState, setNewTagState } = useContext(SelectionContext);
+  const { newTagState, setNewTagState, globalTagState } =
+    useContext(SelectionContext);
+
   const createTagArray = () => {
     const tagArray = [];
+    if (globalTagState !== null) {
+      for (let i = 0; i < globalTagState.length; i++) {
+        tagArray.push(<option value={globalTagState[i]} />);
+      }
+    }
     return tagArray;
   };
 
@@ -15,13 +22,7 @@ export default function TagDropdown() {
         value={newTagState}
         onChange={(e) => setNewTagState(e.target.value)}
       />
-      <datalist id="tags">
-        <option value="Nuq" />
-        <option value="Nuqquu" />
-        <option value="Busy" />
-        <option value="Koodaa" />
-        <option value="Ok" />
-      </datalist>
+      <datalist id="tags">{createTagArray()}</datalist>
     </>
   );
 }

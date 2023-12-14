@@ -35,6 +35,7 @@ export default function TaskArray() {
   const [tagArrayState, setTagArrayState] = useState([]);
   const [newTagState, setNewTagState] = useState("");
   const filterValue = {
+    globalTagState,
     newTagState,
     setNewTagState,
     tagArrayState,
@@ -132,7 +133,6 @@ export default function TaskArray() {
             </div>
           );
         } else {
-          console.log(globalTagState);
           return (
             <div>
               <div>
