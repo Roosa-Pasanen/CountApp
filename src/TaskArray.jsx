@@ -4,6 +4,7 @@ import DeleteContext from "./DeleteContext.jsx";
 import EditTask from "./EditTask.jsx";
 import EditContext from "./EditContext.jsx";
 import connection from "./connection.js";
+import TagList from "./TagList.jsx";
 
 export default function TaskArray() {
   // Stores the current database information
@@ -28,6 +29,9 @@ export default function TaskArray() {
     tagState,
     setTagState,
   }; //Passed through context
+
+  // Stores currently filtered results
+  const [filterState, setFilterState] = useState([]);
 
   /**
    * Fetches and parses the information from the database
@@ -145,11 +149,16 @@ export default function TaskArray() {
     return taskArray;
   }
 
+  const filterResults = () => {};
+
   /**
    * Returns the entire UI
    */
   return (
     <div>
+      <div>
+        <TagList />
+      </div>
       <div>{newTask()}</div>
     </div>
   );
