@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import EditTask from "./EditTask";
 import EditContext from "./EditContext.jsx";
 
+/*React component for individual task elements. */
 export default function Task(props) {
-  const [idState, setIdState] = useState(props.id);
-  const [nameState, setNameState] = useState(props.name);
-  const [tagState, setTagState] = useState(props.tags); //Stores tags
-  const [tagElementState, setTagElementState] = useState(0);
-  const [editState, setEditState] = useState(false); //Stores editing state
+  //States passed through context to the EditTask.jsx for
+  const [editState, setEditState] = useState(false); // Can component be edited?
+  const [idState, setIdState] = useState(props.id); //Task's database id
+  const [nameState, setNameState] = useState(props.name); //Task's name
+  const [tagState, setTagState] = useState(props.tags); //Task's tags
   const value = {
     editState,
     setEditState,
@@ -16,9 +17,17 @@ export default function Task(props) {
     setNameState,
     tagState,
     setTagState,
-  }; //Passed through context
+  };
 
-  // Create a visual effect where you can see the tags
+  // Used for the currently shown tags wrapped in <li> form
+  const [tagElementState, setTagElementState] = useState(0);
+
+  /**
+   * Used for creating a <li> list of tags.
+   *
+   * tagArray = the list of <li> form tags
+   * tagState = the list of plaintext tags
+   */
   useEffect(() => {
     try {
       let tagArray = [];
@@ -31,7 +40,14 @@ export default function Task(props) {
     }
   }, [editState, tagState]);
 
-  // Returns either a UI for the Task or opens an EditTask object
+  /**
+   * If editState is false (the component isn't in an editable state)
+   *  => Return a <div> element with the name, editing button and a list of tags
+   *
+   * If editState is true => Return an EditTask component
+   *
+   * States can be switched by pressing the "Edit" button
+   */
   function editable() {
     if (!editState) {
       return (
