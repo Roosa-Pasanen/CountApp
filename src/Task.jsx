@@ -44,19 +44,38 @@ export default function Task(props) {
   }, [editState, tagState]);
 
   /**
-   * If editState is false (the component isn't in an editable state)
-   *  => Return a <div> element with the name, editing button and a list of tags
+   * props.first = whether the object is the first one in an array
+   * props.last = whether the object is the last one in an array
    *
-   * If editState is true => Return an EditTask component
+   * Logic checks that the topmost and bottom-most objects aren't given
+   * unallowed movement options
    *
-   * States can be switched by pressing the "Edit" button
+   * @returns movement buttons
    */
-  function editable() {
-    if (!editState) {
+  const movement = () => {
+    if (props.first) {
       return (
-        <div style={{ backgroundColor: "antiquewhite" }}>
-          <b>{nameState}</b>
-          <button onClick={() => setEditState(true)}> Edit </button>
+        <button
+          onClick={() => {
+            setPositionState([idState, -1]);
+          }}
+        >
+          {"Down"}
+        </button>
+      );
+    } else if (props.last) {
+      return (
+        <button
+          onClick={() => {
+            setPositionState([idState, 1]);
+          }}
+        >
+          {"Up"}
+        </button>
+      );
+    } else {
+      return (
+        <>
           <button
             onClick={() => {
               setPositionState([idState, 1]);
@@ -71,6 +90,28 @@ export default function Task(props) {
           >
             {"Down"}
           </button>
+        </>
+      );
+    }
+  };
+
+  /**
+   * If editState is false (the component isn't in an editable state)
+   *  => Return a <div> element with the name, editing button, component movement
+   * buttons and a list of tags
+   *
+   * If editState is true => Return an EditTask component
+   *
+   * States can be switched by pressing the "Edit" button
+   */
+
+  function editable() {
+    if (!editState) {
+      return (
+        <div style={{ backgroundColor: "antiquewhite" }}>
+          <b>{nameState}</b>
+          <button onClick={() => setEditState(true)}> Edit </button>
+          {movement()}
           <div>{tagElementState}</div>
         </div>
       );

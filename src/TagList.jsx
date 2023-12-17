@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import TagDropdown from "./TagDropdown";
 import SelectionContext from "./SelectionContext";
 

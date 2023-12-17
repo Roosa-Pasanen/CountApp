@@ -1,3 +1,10 @@
+/**
+ * Contains the methods for contacting the db.json database
+ *
+ * fetchAll -> fetch
+ * putEntry -> Put
+ * postEntry -> Post
+ */
 const connection = {
   fetchAll: async (add) => {
     try {

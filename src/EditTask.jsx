@@ -1,9 +1,11 @@
-import { useState, useEffect, useContext } from "react";
-import EditContext from "./EditContext";
-import TaskContext from "./TaskContext.jsx";
+import { useState, useContext } from "react";
+
 import connection from "./connection.js";
 import TagList from "./TagList.jsx";
+
 import SelectionContext from "./SelectionContext.jsx";
+import EditContext from "./EditContext";
+import TaskContext from "./TaskContext.jsx";
 
 /**
  * React component for editing tasks
@@ -32,6 +34,7 @@ export default function EditTask(props) {
   // Stores a possible new tag
   const [newTagState, setNewTagState] = useState("New tag");
 
+  //Taking in the already existing globalTagState for reuse
   const { globalTagState, setGlobalTagState } = useContext(SelectionContext);
 
   const tagValue = {
@@ -40,7 +43,7 @@ export default function EditTask(props) {
     tagArrayState,
     setTagArrayState,
     globalTagState,
-  };
+  }; //Passed through context to another component
 
   /**
    * Closes the element.
@@ -88,6 +91,10 @@ export default function EditTask(props) {
     setEditState(false);
   };
 
+  /**
+   * Looks for tags that aren't already saved in global tags and saves the new
+   * tags to the state
+   */
   const addGlobalTags = () => {
     for (let i = 0; i < tagArrayState.length; i++) {
       let exists = false;

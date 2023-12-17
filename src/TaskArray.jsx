@@ -33,7 +33,9 @@ export default function TaskArray() {
     setTagState,
   }; //Passed through context
 
+  // Tags that are currently being filtered for
   const [tagArrayState, setTagArrayState] = useState([]);
+  // Tag that is currently being added to the filter list
   const [newTagState, setNewTagState] = useState("");
   const filterValue = {
     newTagState,
@@ -41,9 +43,11 @@ export default function TaskArray() {
     tagArrayState,
     setTagArrayState,
     globalTagState,
-  };
+  }; // Passed through context
 
+  //Passed through context
   const globalValue = { globalTagState, setGlobalTagState };
+
   /**
    * Fetches and parses the information from the database
    * Sets that information in a state
@@ -62,6 +66,11 @@ export default function TaskArray() {
     dataFetch();
   }, []);
 
+  /**
+   * Compiles a list of tags that appear in the tasks and sets it to a state
+   *
+   * @param {Array} info - Data fetched from database
+   */
   const globalTags = (info) => {
     let globalTags = [];
     for (let i = 0; i < info.length; i++) {
@@ -106,6 +115,9 @@ export default function TaskArray() {
     }
   }, [deleteId, displayState]);
 
+  /**
+   * Moves a task's placement in the array accordingly
+   */
   useEffect(() => {
     if (positionState[0] !== undefined) {
       let info = displayState;
@@ -213,7 +225,13 @@ export default function TaskArray() {
         //Create an array of tasks
         <SelectionContext.Provider key={info[i].id} value={globalValue}>
           <TaskContext.Provider value={taskValue}>
-            <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
+            <Task
+              id={info[i].id}
+              name={info[i].name}
+              tags={info[i].tags}
+              first={i == 0}
+              last={i == info.length - 1}
+            />
           </TaskContext.Provider>
         </SelectionContext.Provider>
       );
@@ -221,6 +239,12 @@ export default function TaskArray() {
     return taskArray;
   }
 
+  /**
+   * Filters out entries from an array
+   *
+   * @param {Array} arr - An array needing to be filtered
+   * @returns Returns the filtered array
+   */
   const filterResults = (arr) => {
     arr = arr.filter((task) => {
       let tagMatches = 0;
