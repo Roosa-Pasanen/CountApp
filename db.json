@@ -1,19 +1,31 @@
 {
   "tasks": [
     {
-      "id": "0",
-      "name": "blah",
-      "tags": ["okay", "hello"]
+      "id": 0,
+      "name": "Krooh",
+      "tags": [
+        "Terveys",
+        "Pakko"
+      ]
     },
     {
-      "id": "1",
-      "name": "ello",
-      "tags": ["hi", "okay"]
+      "id": 1,
+      "name": "Koodaa",
+      "tags": [
+        "Koulu",
+        "Produktiivinen",
+        "Boop",
+        "Kone"
+      ]
     },
     {
-      "id": "2",
-      "name": "nukkuu",
-      "tags": ["honk shoo"]
+      "id": 2,
+      "name": "Piirrä",
+      "tags": [
+        "Projekti",
+        "Produktiivinen",
+        "Taide"
+      ]
     }
   ]
 }
