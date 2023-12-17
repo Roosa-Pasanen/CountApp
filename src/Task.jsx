@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import EditTask from "./EditTask";
 import EditContext from "./EditContext.jsx";
+import TaskContext from "./TaskContext.jsx";
 
 /*React component for individual task elements. */
 export default function Task(props) {
@@ -18,6 +19,8 @@ export default function Task(props) {
     tagState,
     setTagState,
   };
+
+  const { setPositionState } = useContext(TaskContext);
 
   // Used for the currently shown tags wrapped in <li> form
   const [tagElementState, setTagElementState] = useState(0);
@@ -54,6 +57,20 @@ export default function Task(props) {
         <div style={{ backgroundColor: "antiquewhite" }}>
           <b>{nameState}</b>
           <button onClick={() => setEditState(true)}> Edit </button>
+          <button
+            onClick={() => {
+              setPositionState([idState, 1]);
+            }}
+          >
+            {"Up"}
+          </button>
+          <button
+            onClick={() => {
+              setPositionState([idState, -1]);
+            }}
+          >
+            {"Down"}
+          </button>
           <div>{tagElementState}</div>
         </div>
       );

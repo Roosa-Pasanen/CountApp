@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Task from "./task.jsx";
-import DeleteContext from "./DeleteContext.jsx";
+import TaskContext from "./TaskContext.jsx";
 import EditTask from "./EditTask.jsx";
 import EditContext from "./EditContext.jsx";
 import connection from "./connection.js";
@@ -12,9 +12,10 @@ export default function TaskArray() {
   const [displayState, setDisplayState] = useState(null);
   const [globalTagState, setGlobalTagState] = useState(null);
 
+  const [positionState, setPositionState] = useState([undefined, undefined]);
   // Holds the task id of a task that should be deleted
   const [deleteId, setDeleteId] = useState(undefined);
-  const deleteValue = { deleteId, setDeleteId };
+  const taskValue = { deleteId, setDeleteId, positionState, setPositionState };
 
   // Stores if a new task UI should be shown and the default values for it
   const [editState, setEditState] = useState(false); //Stores editing state
@@ -105,6 +106,42 @@ export default function TaskArray() {
     }
   }, [deleteId, displayState]);
 
+  useEffect(() => {
+    if (positionState[0] !== undefined) {
+      let info = displayState;
+      let pos = null;
+      for (let i = 0; i < info.length; i++) {
+        if (positionState[0] == info[i].id) {
+          pos = i;
+        }
+      }
+
+      switch (positionState[1]) {
+        case 1:
+          if (positionState[0] !== 0) {
+            const item = info[pos];
+            info.splice(pos, 1);
+            info.splice(pos - 1, 0, item);
+          }
+          break;
+
+        case -1:
+          if (positionState[0] !== info.length - 1) {
+            const item = info[pos];
+            info.splice(pos, 1);
+            info.splice(pos + 1, 0, item);
+          }
+          break;
+
+        default:
+          break;
+      }
+      console.log(info);
+      console.log(positionState[0] + " " + positionState[1]);
+      setPositionState([undefined, undefined]);
+    }
+  }, [positionState, displayState]);
+
   /**
    * If the data
    *  - has been fetched
@@ -175,9 +212,9 @@ export default function TaskArray() {
       taskArray.push(
         //Create an array of tasks
         <SelectionContext.Provider key={info[i].id} value={globalValue}>
-          <DeleteContext.Provider value={deleteValue}>
+          <TaskContext.Provider value={taskValue}>
             <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
-          </DeleteContext.Provider>
+          </TaskContext.Provider>
         </SelectionContext.Provider>
       );
     }

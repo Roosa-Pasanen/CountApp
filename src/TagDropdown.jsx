@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import SelectionContext from "./SelectionContext";
 
 export default function TagDropdown() {

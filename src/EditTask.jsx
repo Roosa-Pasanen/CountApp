@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import EditContext from "./EditContext";
-import DeleteContext from "./DeleteContext.jsx";
+import TaskContext from "./TaskContext.jsx";
 import connection from "./connection.js";
 import TagList from "./TagList.jsx";
 import SelectionContext from "./SelectionContext.jsx";
@@ -23,7 +23,7 @@ export default function EditTask(props) {
 
   // DeleteContext variables
   // ID is set to deleteId if user wants to delete the task from databse
-  const { deleteId, setDeleteId } = useContext(DeleteContext);
+  const { deleteId, setDeleteId } = useContext(TaskContext);
 
   // Stores current name
   const [newNameState, setNewNameState] = useState(props.name);
