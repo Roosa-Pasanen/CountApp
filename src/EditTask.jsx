@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from "react";
 import EditContext from "./EditContext";
 import DeleteContext from "./DeleteContext.jsx";
 import connection from "./connection.js";
+import TagList from "./TagList.jsx";
+import SelectionContext from "./SelectionContext.jsx";
 
 /**
  * React component for editing tasks
@@ -26,46 +28,19 @@ export default function EditTask(props) {
   // Stores current name
   const [newNameState, setNewNameState] = useState(props.name);
   // Stores current tags
-  const [editTagState, setEditTagState] = useState(props.tags);
+  const [tagArrayState, setTagArrayState] = useState(props.tags);
   // Stores a possible new tag
   const [newTagState, setNewTagState] = useState("New tag");
 
-  /**
-   * List of tags with a delete button next to them corresponding to each tag.
-   * @returns - The array with the list
-   */
-  function displayTags() {
-    let tagArray = [];
-    for (let i = 0; i < editTagState.length; i++) {
-      tagArray.push(
-        // Tag name + delete button for the tag
-        <li key={i}>
-          {editTagState[i]}
-          <button onClick={() => deleteTag(editTagState[i])}>Delete</button>
-        </li>
-      );
-    }
-    return tagArray;
-  }
+  const { globalTagState, setGlobalTagState } = useContext(SelectionContext);
 
-  /**
-   * Add a new tag to the editable object and return the UI to normal
-   */
-  function addTag() {
-    const newArray = editTagState;
-    newArray.push(newTagState);
-    setEditTagState(newArray);
-    setNewTagState("New tag");
-  }
-
-  /**
-   * Sends filters out a tag and sets the filtered out array as the current state.
-   * @param {String} name - The currently being filtered out tag's name
-   */
-  function deleteTag(name) {
-    const newArray = editTagState.filter((tag) => tag !== name);
-    setEditTagState(newArray);
-  }
+  const tagValue = {
+    newTagState,
+    setNewTagState,
+    tagArrayState,
+    setTagArrayState,
+    globalTagState,
+  };
 
   /**
    * Closes the element.
@@ -81,12 +56,13 @@ export default function EditTask(props) {
       if (idState !== undefined) {
         try {
           setNameState(newNameState);
-          setTagState(editTagState);
+          setTagState(tagArrayState);
+          addGlobalTags();
           await connection.putEntry(
             "http://localhost:3010/tasks",
             idState,
             newNameState,
-            editTagState
+            tagArrayState
           );
         } catch (err) {
           console.log("Connection error");
@@ -95,12 +71,13 @@ export default function EditTask(props) {
         try {
           setIdState(props.newID);
           setNameState(newNameState);
-          setTagState(editTagState);
+          setTagState(tagArrayState);
+          addGlobalTags();
           await connection.postEntry(
             "http://localhost:3010/tasks",
             idState,
             newNameState,
-            editTagState
+            tagArrayState
           );
         } catch (err) {
           console.log(err);
@@ -109,6 +86,22 @@ export default function EditTask(props) {
       }
     }
     setEditState(false);
+  };
+
+  const addGlobalTags = () => {
+    for (let i = 0; i < tagArrayState.length; i++) {
+      let exists = false;
+      for (let j = 0; j < globalTagState.length; j++) {
+        if (tagArrayState[i] == globalTagState[j]) {
+          exists = true;
+        }
+      }
+      if (!exists) {
+        let arr = globalTagState;
+        arr.push(tagArrayState[i]);
+        setGlobalTagState(arr);
+      }
+    }
   };
 
   /**
@@ -162,12 +155,11 @@ export default function EditTask(props) {
         value={newNameState}
         onChange={(e) => setNewNameState(e.target.value)}
       />
-      <ul>{displayTags()}</ul>
-      <input
-        value={newTagState}
-        onChange={(e) => setNewTagState(e.target.value)}
-      />
-      <button onClick={() => addTag()}> Add new Tag </button> {"\n"}
+      <div>
+        <SelectionContext.Provider value={tagValue}>
+          <TagList new={"Add new Tag"} />
+        </SelectionContext.Provider>
+      </div>
       <div>
         <button onClick={() => closeEditTask(false)}> Cancel </button>
         <button onClick={() => closeEditTask(true)}> Save </button>

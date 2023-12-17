@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import SelectionContext from "./SelectionContext";
 
 export default function TagDropdown() {
@@ -9,7 +9,7 @@ export default function TagDropdown() {
     const tagArray = [];
     if (globalTagState !== null) {
       for (let i = 0; i < globalTagState.length; i++) {
-        tagArray.push(<option value={globalTagState[i]} />);
+        tagArray.push(<option key={i} value={globalTagState[i]} />);
       }
     }
     return tagArray;

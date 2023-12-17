@@ -6,6 +6,7 @@ const SelectionContext = React.createContext({
   tagArrayState: [],
   setTagArrayState: () => {},
   globalTagState: [],
+  setGlobalTagState: () => {},
 });
 
 export default SelectionContext;

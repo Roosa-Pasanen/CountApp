@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import EditTask from "./EditTask";
 import EditContext from "./EditContext.jsx";
 
@@ -58,7 +58,6 @@ export default function Task(props) {
         </div>
       );
     } else {
-      //console.log(props.id);
       return (
         <EditContext.Provider value={value}>
           <div>

@@ -35,12 +35,14 @@ export default function TaskArray() {
   const [tagArrayState, setTagArrayState] = useState([]);
   const [newTagState, setNewTagState] = useState("");
   const filterValue = {
-    globalTagState,
     newTagState,
     setNewTagState,
     tagArrayState,
     setTagArrayState,
+    globalTagState,
   };
+
+  const globalValue = { globalTagState, setGlobalTagState };
   /**
    * Fetches and parses the information from the database
    * Sets that information in a state
@@ -114,7 +116,7 @@ export default function TaskArray() {
    *
    * -> If something goes wrong, show error
    */
-  const newTask = () => {
+  const uI = () => {
     try {
       if (displayState != null) {
         if (editState) {
@@ -172,9 +174,11 @@ export default function TaskArray() {
     for (let i = 0; i < info.length; i++) {
       taskArray.push(
         //Create an array of tasks
-        <DeleteContext.Provider key={info[i].id} value={deleteValue}>
-          <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
-        </DeleteContext.Provider>
+        <SelectionContext.Provider key={info[i].id} value={globalValue}>
+          <DeleteContext.Provider value={deleteValue}>
+            <Task id={info[i].id} name={info[i].name} tags={info[i].tags} />
+          </DeleteContext.Provider>
+        </SelectionContext.Provider>
       );
     }
     return taskArray;
@@ -198,12 +202,10 @@ export default function TaskArray() {
    */
   return (
     <div>
-      <div>
-        <SelectionContext.Provider value={filterValue}>
-          <TagList />
-        </SelectionContext.Provider>
-      </div>
-      <div>{newTask()}</div>
+      <SelectionContext.Provider value={filterValue}>
+        <TagList title={"Filtered tags: "} new={"Add new filter"} />
+      </SelectionContext.Provider>
+      <div>{uI()}</div>
     </div>
   );
 }

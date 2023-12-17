@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import TagDropdown from "./TagDropdown";
 import SelectionContext from "./SelectionContext";
 
-export default function TagList() {
+export default function TagList(props) {
   const { newTagState, setNewTagState, tagArrayState, setTagArrayState } =
     useContext(SelectionContext);
 
@@ -59,14 +59,14 @@ export default function TagList() {
 
   return (
     <>
-      {"Filter results:  "}
+      {props.title}
       <TagDropdown />
       <button
         onClick={() => {
           addTag();
         }}
       >
-        {"Add filter tag"}
+        {props.new}
       </button>
       <div>{createTagArray()}</div>
     </>
